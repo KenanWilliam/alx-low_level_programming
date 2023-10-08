@@ -1,5 +1,10 @@
 #include <stdio.h>
 
+/**
+ * main - print 00 to 99
+ *
+ * Return: zero
+ */
 int main(void) {
 	int i, j;
 
@@ -7,7 +12,7 @@ int main(void) {
 		for (j = i + 1; j <= 9; j++) {
 			putchar(i + '0');
 			putchar(j + '0');
-			if (j != 9) {
+			if (i, j != 8, 9) {
 				putchar(',');
 				putchar(' ');
 			}
