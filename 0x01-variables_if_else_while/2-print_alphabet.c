@@ -1,13 +1,16 @@
 #include <stdio.h>
 
-int main() {
+int main(void)
+{
   char c = 'a';
-  int i = 0;
-  while (i < 26) {
+
+  while (c <= 'z')
+  {
     putchar(c);
-    putchar('\n');
     c++;
-    i++;
   }
-  return 0;
+
+  putchar('\n');
+
+  return (0);
 }
