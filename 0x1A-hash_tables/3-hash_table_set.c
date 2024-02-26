@@ -1,45 +1,53 @@
-#include <stdlib.h>
-#include <string.h>
 #include "hash_tables.h"
+
 /**
- * hash_table_set - Creates a new node and assigns key and value to it.
- * @ht: hash table you want to add or update the value/value to
- * @key: the key; cannot be empty
- * @value: value associated with the key.
- * Return: 1 on success, 0 on failure.
+ * hash_table_set - Add or update an element in a hash table.
+ * @ht: A pointer to the hash table.
+ * @key: The key to add - cannot be an empty string.
+ * @value: The value associated with key.
+ *
+ * Return: Upon failure - 0.
+ *         Otherwise - 1.
  */
 int hash_table_set(hash_table_t *ht, const char *key, const char *value)
 {
-	hash_node_t *node, *temp;
-	unsigned long int index;
+	hash_node_t *new;
+	char *value_copy;
+	unsigned long int index, i;
 
-	if (key == 0)
+	if (ht == NULL || key == NULL || *key == '\0' || value == NULL)
 		return (0);
-	if (ht == NULL)
+
+	value_copy = strdup(value);
+	if (value_copy == NULL)
 		return (0);
-	node = malloc(sizeof(hash_node_t));
-	if (node == NULL)
-		return (0);
-	node->key = strdup(key);
-	node->value = strdup(value);
-	index = key_index((void *)key, ht->size);
-	temp = ht->array[index];
-	if (ht->array[index] != NULL)
+
+	index = key_index((const unsigned char *)key, ht->size);
+	for (i = index; ht->array[i]; i++)
 	{
-		temp = ht->array[index];
-		while (temp != NULL)
+		if (strcmp(ht->array[i]->key, key) == 0)
 		{
-			if (strcmp(temp->key, node->key) == 0)
-				break;
-			temp = temp->next;
-		}
-		if (temp == NULL)
-		{
-			node->next = ht->array[index];
-			ht->array[index] = node;
+			free(ht->array[i]->value);
+			ht->array[i]->value = value_copy;
+			return (1);
 		}
 	}
-	else
-		node->next = NULL, ht->array[index] = node;
+
+	new = malloc(sizeof(hash_node_t));
+	if (new == NULL)
+	{
+		free(value_copy);
+		return (0);
+	}
+	new->key = strdup(key);
+	if (new->key == NULL)
+	{
+		free(new);
+		return (0);
+	}
+	new->value = value_copy;
+	new->next = ht->array[index];
+	ht->array[index] = new;
+
 	return (1);
 }
